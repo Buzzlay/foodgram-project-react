@@ -13,11 +13,11 @@ class Ingredient(models.Model):
     )
     dimension = models.CharField(
         max_length=200,
-        verbose_name='Мера'
+        verbose_name='Мера',
     )
 
     class Meta:
-        ordering = ('title',)
+        ordering = ('title', )
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
@@ -42,6 +42,12 @@ class Recipe(models.Model):
     )
     description = models.TextField(
         verbose_name='Описание',
+    )
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='RecipeIngredient',
+        through_fields=('recipe', 'ingredient'),
+        verbose_name='Ингредиенты',
     )
     time_for_preparing = models.PositiveIntegerField(
         verbose_name='Время приготовления (в минутах)',

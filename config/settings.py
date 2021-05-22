@@ -41,7 +41,7 @@ if DEBUG:
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     ]
 
-ROOT_URLCONF = 'foodgram.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -59,7 +59,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'foodgram.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
