@@ -1,8 +1,10 @@
 from django.urls import path
 
-from .views import IndexView, FavoriteView
+from . import views
 
 urlpatterns = [
-    path('', IndexView.as_view(), name='index'),
-    path('favorites', FavoriteView.as_view(), name='favorites')
+    path('', views.IndexView.as_view(), name='index'),
+    path('favorites', views.FavoriteView.as_view(), name='favorites'),
+    path('profiles/<str:username>', views.ProfileView.as_view(), name='profile'),
+    path('recipes/<int:id>', views.RecipeDetailView.as_view(), name='recipe')
 ]

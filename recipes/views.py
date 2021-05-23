@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views.generic.list import ListView
+from django.views.generic import ListView, DetailView
 
-from recipes.models import Recipe, User
+from .models import Recipe, User
+from .models import RecipeQuerySet
 
 
 class BaseRecipeListView(ListView):
@@ -16,7 +17,8 @@ class BaseRecipeListView(ListView):
         """Add page title to the context."""
         kwargs.update({'page_title': self._get_page_title()})
 
-        return super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        return context
 
     def _get_page_title(self):
         """Get page title."""
@@ -34,18 +36,21 @@ class IndexView(BaseRecipeListView):
 
 class FavoriteView(LoginRequiredMixin, BaseRecipeListView):
     """List of current user's favorite Recipes"""
-    page_title = 'Рецепты'
+    page_title = 'Избранное'
+    template_name = 'recipes/recipe_list.html'
 
     def get_queryset(self):
         """Display favorite recipes only."""
         qs = super().get_queryset()
-        qs = qs.filter(favorites__user=self.request.user)
+        user = self.request.user
+        qs = qs.filter(favorites__user=user).with_is_favorite(user_id=user.id)
 
         return qs
 
 
 class ProfileView(BaseRecipeListView):
     """User's page with its name and list of authored Recipes."""
+    template_name = 'recipes/profile_recipe_list.html'
 
     def get(self, request, *args, **kwargs):
         """Store 'user' parameter for data filtration purposes."""
@@ -56,10 +61,23 @@ class ProfileView(BaseRecipeListView):
     def get_queryset(self):
         """Display favorite recipes only."""
         qs = super().get_queryset()
-        qs = qs.filter(author=self.user)
+        qs = qs.filter(author=self.user).with_is_favorite(user_id=self.user.id)
 
         return qs
 
     def _get_page_title(self):
         """Get page title."""
         return self.user.get_full_name()
+
+
+class RecipeDetailView(DetailView):
+    """Page with Recipe details."""
+    queryset = Recipe.objects.all()
+    template_name = 'recipes/recipe_detail.html'
+
+    def get_queryset(self):
+        """Display favorite recipes only."""
+        qs = super().get_queryset()
+        qs = qs.with_is_favorite(user_id=self.request.user.id)
+
+        return qs

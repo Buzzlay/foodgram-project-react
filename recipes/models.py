@@ -1,7 +1,9 @@
+from typing import Optional
+
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-
+from django.db.models import Exists, OuterRef
 
 User = get_user_model()
 
@@ -23,6 +25,17 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'{self.title}, {self.dimension}'
+
+
+class RecipeQuerySet(models.QuerySet):
+    def with_is_favorite(self, user_id: Optional[int]):
+        """Annotate with favorite flag."""
+        return self.annotate(is_favorite=Exists(
+            Favorite.objects.filter(
+                user_id=user_id,
+                recipe_id=OuterRef('pk'),
+            ),
+        ))
 
 
 class Recipe(models.Model):
