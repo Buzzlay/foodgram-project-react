@@ -6,15 +6,18 @@
                 <li class="nav__item {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'main' %} {% endif %} ">
                     <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
                 </li>
+
                 {% if user.is_authenticated %}
+                {% comment %}
                     <li class="nav__item {% if request.resolver_match.url_name == 'create' %}nav__item_active {% endif %} ">
                         <a href="{% url 'create' %}" class="nav__link link">Создать рецепт</a>
                     </li>
-
+                {% endcomment %}
                     <li class="nav__item {% if request.resolver_match.url_name == 'favorites' %} nav__item_active" {% endif %}>
                         <a href="{% url 'favorites' %}" class="nav__link link">Избранное</a>
                     </li>
                 {% endif %}
+
             </ul>
             <ul class="nav__items list">
                 {% if user.is_authenticated %}

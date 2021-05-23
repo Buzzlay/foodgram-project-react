@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.views.generic.list import ListView
 
 from recipes.models import Recipe, User
@@ -20,7 +20,7 @@ class BaseRecipeListView(ListView):
 
     def _get_page_title(self):
         """Get page title."""
-        assert self.page_title, f'Attrinute "page_title" not set for' \
+        assert self.page_title, f'Attribute "page_title" not set for' \
                                 f' {self.__class__.__name__}' # noqa
 
         return self.page_title
@@ -29,11 +29,12 @@ class BaseRecipeListView(ListView):
 class IndexView(BaseRecipeListView):
     """Main page that displays list of Recipes."""
     page_title = 'Рецепты'
-    template_name = 'recipes/index.html'
+    template_name = 'recipes/recipe_list.html'
 
 
 class FavoriteView(LoginRequiredMixin, BaseRecipeListView):
-    page_title = 'Recipes'
+    """List of current user's favorite Recipes"""
+    page_title = 'Рецепты'
 
     def get_queryset(self):
         """Display favorite recipes only."""
