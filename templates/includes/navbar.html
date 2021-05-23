@@ -3,7 +3,7 @@
         <div class="nav__container container">
 
             <ul class="nav__items list">
-                <li class="nav__item {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'main' %} {% endif %} ">
+                <li class="nav__item {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'main' %}nav__item_active {% endif %}">
                     <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
                 </li>
 
@@ -13,7 +13,7 @@
                         <a href="{% url 'create' %}" class="nav__link link">Создать рецепт</a>
                     </li>
                 {% endcomment %}
-                    <li class="nav__item {% if request.resolver_match.url_name == 'favorites' %} nav__item_active" {% endif %}>
+                    <li class="nav__item {% if request.resolver_match.url_name == 'favorites' %} nav__item_active {% endif %}">
                         <a href="{% url 'favorites' %}" class="nav__link link">Избранное</a>
                     </li>
                 {% endif %}
