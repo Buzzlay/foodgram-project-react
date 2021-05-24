@@ -73,6 +73,7 @@ class Recipe(models.Model):
         auto_now_add=True,
         db_index=True,
     )
+    objects = RecipeQuerySet.as_manager()
 
     class Meta:
         ordering = ('-publication_date', )
