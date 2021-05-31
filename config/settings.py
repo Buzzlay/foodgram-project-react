@@ -10,11 +10,18 @@ SECRET_KEY = 'django-insecure-elo19s1eqy_k3@*_-4)=@y18#)do=rtnh@gm+)hii&%pwd(#^p
 
 DEBUG = True
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'api',
     'recipes',
     'users',
+    'rest_framework',
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

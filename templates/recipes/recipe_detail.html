@@ -60,7 +60,7 @@
                 <div class="single-card__items single-card__items_column">
 
                     <ul class="card__items">
-                        {% for recipe_ingredient in recipe.recipeingredient_set.all %}
+                        {% for recipe_ingredient in recipe.recipe_ingredients.all %}
                             <li class="single-card__section-item">
                                 {{ recipe_ingredient.ingredient.title }} - {{ recipe_ingredient.amount }} {{ recipe_ingredient.ingredient.dimension }}
                             </li>

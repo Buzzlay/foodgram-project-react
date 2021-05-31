@@ -95,11 +95,13 @@ class RecipeIngredient(models.Model):
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиент',
+        related_name='ingredient_recipes',
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
+        related_name='recipe_ingredients',
     )
 
     def __str__(self):
@@ -136,3 +138,28 @@ class Favorite(models.Model):
         ]
         verbose_name = 'Объект избранного'
         verbose_name_plural = 'Объекты избранного'
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User,
+        related_name='follower',
+        on_delete=models.CASCADE
+    )
+    author = models.ForeignKey(
+        User,
+        related_name='following',
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        models.UniqueConstraint(
+            fields=['author', 'user'],
+            name='following_unique'
+        )
+
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
+
+    def __str__(self):
+        return f'{self.user} - подписчик автора - {self.author}'

@@ -3,14 +3,28 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
 
 from .models import Recipe, User
-from .models import RecipeQuerySet
 
 
-class BaseRecipeListView(ListView):
+class IsFavoriteMixin:
+    """Add annotation with favorite mark to the View."""
+
+    def get_queryset(self):
+        """Add annotation with favorite mark."""
+        qs = super().get_queryset()
+        qs = (
+            qs
+            .select_related('author')
+            .with_is_favorite(user_id=self.request.user.id)
+        )
+
+        return qs
+
+
+class BaseRecipeListView(IsFavoriteMixin, ListView):
     """Base view for Recipe list."""
     context_object_name = 'recipe_list'
     queryset = Recipe.objects.all()
-    paginate_by = 6
+    paginate_by = 60
     page_title = None
 
     def get_context_data(self, **kwargs):
@@ -61,7 +75,7 @@ class ProfileView(BaseRecipeListView):
     def get_queryset(self):
         """Display favorite recipes only."""
         qs = super().get_queryset()
-        qs = qs.filter(author=self.user).with_is_favorite(user_id=self.user.id)
+        qs = qs.filter(author=self.user)
 
         return qs
 
@@ -69,8 +83,13 @@ class ProfileView(BaseRecipeListView):
         """Get page title."""
         return self.user.get_full_name()
 
+    def get_context_data(self, **kwargs):
+        kwargs.update({'author': self.user})
+        context = super().get_context_data(**kwargs)
+        return context
 
-class RecipeDetailView(DetailView):
+
+class RecipeDetailView(IsFavoriteMixin, DetailView):
     """Page with Recipe details."""
     queryset = Recipe.objects.all()
     template_name = 'recipes/recipe_detail.html'
@@ -78,6 +97,10 @@ class RecipeDetailView(DetailView):
     def get_queryset(self):
         """Display favorite recipes only."""
         qs = super().get_queryset()
-        qs = qs.with_is_favorite(user_id=self.request.user.id)
+        qs = (
+            qs
+            .prefetch_related('recipe_ingredients__ingredient')
+            .with_is_favorite(user_id=self.request.user.id)
+        )
 
         return qs

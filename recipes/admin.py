@@ -68,3 +68,17 @@ class FavoriteAdmin(admin.ModelAdmin):
         'user',
         'recipe',
     )
+
+
+@register(models.Follow)
+class FollowAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'author',
+    )
+    search_fields = (
+        'user',
+    )
+    list_filter = (
+        'author',
+    )

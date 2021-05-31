@@ -1,3 +1,12 @@
+{% load static %}
+{% block page_title %}
+    {{ page_title }}
+{% endblock %}
+
+
+{% block static_css %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,7 +27,6 @@
                   <li class="nav__item"><a href="#" class="nav__link link">Создать рецепт</a></li>
                   <li class="nav__item"><a href="#" class="nav__link link">Избранное</a></li>
                   <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
-
               </ul>
               <ul class="nav__items list">
                   <li class="nav__item"><a href="#" class="nav__link link">Изменить пароль</a></li>
@@ -109,7 +117,7 @@
             </div>
         </div>
         <div class="card" data-id="123">
-            <a href="#" class="link" target="_blank"><img src="../../ui/images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <a href="#" class="link" target="_blank"><img src="{% static 'images/testCardImg.png' %}" alt="Какой-то текст" class="card__image"></a>
             <div class="card__body">
                 <a class="card__title link" href="#" target="_blank">Французские тосты</a>
                 <ul class="card__items">
@@ -168,17 +176,19 @@
             </ul>
         </div>
     </footer>
-  <script src="../../ui/js/components/MainCards.js"></script>
+{% block static_js %}
+    <script src="{% static 'js/config/config.js' %}"></script>
 
-  <script src="../../ui/js/components/Purchases.js"></script>
-  <script src="../../ui/js/components/Favorites.js"></script>
-  <script src="../../ui/js/components/Subscribe.js"></script>
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/components/Purchases.js' %}"></script>
+    <script src="{% static 'js/components/Favorites.js' %}"></script>
+    <script src="{% static 'js/components/Subscribe.js' %}"></script>
 
-  <script src="../../ui/js/config/config.js"></script>
-  <script src="../../ui/js/components/AuthorRecipe.js"></script>
-  <script src="../../ui/js/components/Header.js"></script>
-
-  <script src="../../ui/js/api/Api.js"></script>
-  <script src="../../ui/js/templates/foodgram/authorRecipe.js"></script>
+    <script src="{% static 'js/components/CardList.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/components/AuthorRecipe.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'js/templates/foodgram/authorRecipe.js' %}"></script>
+{% endblock %}
 </body>
 </html>

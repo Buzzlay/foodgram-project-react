@@ -3,21 +3,26 @@
         <div class="nav__container container">
 
             <ul class="nav__items list">
-                <li class="nav__item {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'main' %}nav__item_active {% endif %}">
+                <li class="nav__item {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'recipe' %}nav__item_active {% endif %}">
                     <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
                 </li>
 
                 {% if user.is_authenticated %}
-                {% comment %}
                     <li class="nav__item {% if request.resolver_match.url_name == 'create' %}nav__item_active {% endif %} ">
-                        <a href="{% url 'create' %}" class="nav__link link">Создать рецепт</a>
+                        <a href="#" {% comment %}href="{% url 'create' %}"{% endcomment %} class="nav__link link">Создать рецепт</a>
                     </li>
-                {% endcomment %}
                     <li class="nav__item {% if request.resolver_match.url_name == 'favorites' %} nav__item_active {% endif %}">
                         <a href="{% url 'favorites' %}" class="nav__link link">Избранное</a>
                     </li>
                 {% endif %}
-
+                <li class="nav__item">
+                    <a href="#" class="nav__link link">
+                        Список покупок
+                    </a>
+                    <span class="badge badge_style_blue nav__badge" id="counter">
+                        4
+                    </span>
+                </li>
             </ul>
             <ul class="nav__items list">
                 {% if user.is_authenticated %}
