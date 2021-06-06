@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -27,8 +28,9 @@ class RemoveFromFavorite(APIView):
 
 
 class AddToFollows(APIView):
-    """Subscribe to the author."""
+    permission_classes = (IsAuthenticated, )
 
+    """Subscribe to the author."""
     def post(self, request):
         author = get_object_or_404(User, id=request.data['id'])
         Follow.objects.get_or_create(
@@ -38,7 +40,6 @@ class AddToFollows(APIView):
         return Response({'success': True}, status=status.HTTP_200_OK)
 
     """Unsubscribe from author."""
-
     def delete(self, request, author_id):
         get_object_or_404(
             Follow,

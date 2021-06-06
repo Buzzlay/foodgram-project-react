@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block page_title %}
+    Мои подписки
+{% endblock %}
+
+
+{% block static_css %}
+    <link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="main__header">
+        <h1 class="main__title">{{ page_title }}</h1>
+    </div>
+    <div class="card-list">
+        {% for author in page_obj %}
+            <div class="card-user" data-author={{ author.pk }}>
+                <div class="card-user__header">
+                    <a href="{% url 'profile' author.username %}" style="color: black">
+                        <h2 class="card-user__title">
+                            {% firstof author.get_full_name author.username %}
+                        </h2>
+                    </a>
+                </div>
+                <div class="card-user__body">
+                    <ul class="card-user__items">
+                        {% for recipe in author.recipes.all %}
+                            <li class="card-user__item">
+                            <div class="recipe">
+                                <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="recipe__image">
+                                <h3 class="recipe__title">{{ recipe.name }}</h3>
+                                <p class="recipe__text">
+                                    <span class="icon-time"></span>{{ recipe.time_for_preparing }} мин.
+                                </p>
+                            </div>
+                        </li>
+                        {% endfor %}
+                        {% comment %}
+                        <li class="card-user__item">
+                            <a href="#" class="card-user__link link">Еще 7 рецептов...</a>
+                        </li>
+                        {% endcomment %}
+                    </ul>
+                </div>
+                <div class="card-user__footer" data-author={{ author.pk }}>
+                    <button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Отписаться</button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% if page_obj.has_other_pages %}
+        {% include 'includes/paginator.html' with items=page_obj paginator=paginator %}
+    {% endif %}
+{% endblock %}
+{% block static_js %}
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/components/MyFollow.js' %}"></script>
+    <script src="{% static 'js/components/Subscribe.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'js/templates/foodgram/myFollow.js' %}"></script>
+{% endblock %}

@@ -21,18 +21,18 @@
                 <h1 class="single-card__title">{{ recipe.name }}</h1>
                 <div class="single-card__favorite">
                     {% include 'includes/favorite_button.html' %}
-
-                    <div class="single-card__favorite-tooltip tooltip">{% if user.is_authenticated and recipe.is_favorite %}Убрать из избранного{% else %}Добавить в избранное{% endif %}</div>
+                    <div class="single-card__favorite-tooltip tooltip">
+                        {% if user.is_authenticated and recipe.is_favorite %}
+                            Убрать из избранного
+                        {% else %}
+                            Добавить в избранное
+                        {% endif %}
+                    </div>
                 </div>
             </div>
 
             <ul class="single-card__items">
                 {% include 'includes/tags.html' %}
-                {% comment %}
-                {% for tag in recipe.tags.all %}
-                    <li class="single-card__item"><span class="badge badge_style_{{ tag.color }}">{{ tag.name }}</span> </li>
-                {% endfor %}
-                {% endcomment %}
             </ul>
 
             <div class="single-card__items single-card__items_column">
@@ -54,7 +54,14 @@
                     {% endif %}
                 </ul>
             </div>
-
+            <ul class="single-card__items">
+                <li class="single-card__item">
+                    <button class="button button_style_blue" name="purchases" data-out>
+                        <span class="icon-plus"></span> Добавить в покупки
+                    </button>
+                </li>
+                <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></li>
+            </ul>
             <div class="single-card__section">
                 <h3 class="single-card__section-title">Ингредиенты</h3>
                 <div class="single-card__items single-card__items_column">

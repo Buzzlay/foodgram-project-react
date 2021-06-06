@@ -27,4 +27,9 @@ urlpatterns = [
         views.RecipeDetailView.as_view(),
         name='recipe'
     ),
+    path(
+        'subscriptions/',
+        views.SubscriptionView.as_view(),
+        name='subscriptions',
+    )
 ]

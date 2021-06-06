@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
+from django import template
 from django.views.generic import ListView, DetailView
 
 from .models import Recipe, User
@@ -20,16 +21,21 @@ class IsFavoriteMixin:
         return qs
 
 
+register = template.Library()
+
+
 class BaseRecipeListView(IsFavoriteMixin, ListView):
     """Base view for Recipe list."""
     context_object_name = 'recipe_list'
     queryset = Recipe.objects.all()
-    paginate_by = 60
+    paginate_by = 6
     page_title = None
 
     def get_context_data(self, **kwargs):
         """Add page title to the context."""
-        kwargs.update({'page_title': self._get_page_title()})
+        kwargs.update({
+            'page_title': self._get_page_title(),
+        })
 
         context = super().get_context_data(**kwargs)
         return context
@@ -104,3 +110,16 @@ class RecipeDetailView(IsFavoriteMixin, DetailView):
         )
 
         return qs
+
+
+class SubscriptionView(BaseRecipeListView):
+    """Page that displays list of Recipes from subscriptions."""
+    page_title = 'Мои подписки'
+    template_name = 'recipes/my_follows.html'
+
+    def get_queryset(self):
+        """Display following recipes only."""
+        users = User.objects.all()
+        qs = users.filter(following__user_id=self.request.user.id)
+        return qs
+

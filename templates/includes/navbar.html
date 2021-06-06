@@ -8,6 +8,9 @@
                 </li>
 
                 {% if user.is_authenticated %}
+                    <li class="nav__item {% if request.resolver_match.url_name == 'subscriptions' %}nav__item_active {% endif %}">
+                        <a href="{% url 'subscriptions' %}" class="nav__link link">Мои подписки</a>
+                    </li>
                     <li class="nav__item {% if request.resolver_match.url_name == 'create' %}nav__item_active {% endif %} ">
                         <a href="#" {% comment %}href="{% url 'create' %}"{% endcomment %} class="nav__link link">Создать рецепт</a>
                     </li>
