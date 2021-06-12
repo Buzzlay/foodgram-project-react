@@ -11,6 +11,11 @@ urlpatterns = [
         views.IndexView.as_view(),
         name='index'
     ),
+    path(
+        '<slug:tag_slug>',
+        views.recipes_by_tag,
+        name='recipes_list_by_tag'
+    ),
     path('api/', include('api.urls')),
     path(
         'favorites/',
@@ -31,5 +36,10 @@ urlpatterns = [
         'subscriptions/',
         views.SubscriptionView.as_view(),
         name='subscriptions',
+    ),
+    path(
+        'shoplist/',
+        views.cart,
+        name='shoplist'
     )
 ]

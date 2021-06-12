@@ -38,37 +38,6 @@ class RecipeIngredientInline(admin.TabularInline):
     extra = 0
 
 
-@register(models.RecipeTag)
-class RecipeTagAdmin(admin.ModelAdmin):
-    list_display = (
-        'tag',
-        'recipe'
-    )
-    search_fields = (
-        'recipe',
-    )
-    list_filter = (
-        'tag',
-    )
-
-
-class RecipeTagInline(admin.TabularInline):
-    model = models.RecipeTag
-    min_num = 0
-    extra = 0
-
-
-@register(models.Tag)
-class TagAdmin(admin.ModelAdmin):
-    list_display = (
-        'title',
-        'color',
-    )
-    search_fields = (
-        'title',
-    )
-
-
 @register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (

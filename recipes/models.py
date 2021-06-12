@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Exists, OuterRef
+from taggit.managers import TaggableManager
 from typing import Optional
 
 User = get_user_model()
@@ -32,22 +33,6 @@ class Ingredient(models.Model):
         return f'{self.title}, {self.dimension}'
 
 
-class Tag(models.Model):
-    title = models.CharField(
-        max_length=7,
-        choices=TAGS,
-        default='B',
-        verbose_name='Название'
-    )
-    color = models.CharField(
-        max_length=100,
-        verbose_name='Цвет',
-    )
-
-    def __str__(self):
-        return self.title
-
-
 class RecipeQuerySet(models.QuerySet):
     def with_is_favorite(self, user_id: Optional[int]):
         """Annotate with favorite flag."""
@@ -70,12 +55,7 @@ class Recipe(models.Model):
         max_length=200,
         verbose_name='Название рецепта',
     )
-    tag = models.ManyToManyField(
-        Tag,
-        through='RecipeTag',
-        through_fields=('recipe', 'tag'),
-        verbose_name='Тэги',
-    )
+    tags = TaggableManager()
     image = models.ImageField(
         upload_to='recipes/images/',
         verbose_name='Картинка',
@@ -101,7 +81,6 @@ class Recipe(models.Model):
         db_index=True,
     )
     objects = RecipeQuerySet.as_manager()
-    #following_recipes = FollowingRecipeQuerySet.as_manager()
 
     class Meta:
         ordering = ('-publication_date', )
@@ -110,34 +89,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class RecipeTag(models.Model):
-    tag = models.ForeignKey(
-        Tag,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='tag_recipes',
-        verbose_name='Тэг',
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name='Рецепт',
-        related_name='recipe_tags',
-    )
-
-    class Meta:
-        models.UniqueConstraint(
-            fields=['tag', 'recipe'],
-            name='tag_unique'
-        )
-
-        verbose_name = 'тег'
-        verbose_name_plural = 'теги'
-
-    def __str__(self):
-        return f'Тег рецепта {self.recipe}:{self.tag}'
 
 
 class RecipeIngredient(models.Model):

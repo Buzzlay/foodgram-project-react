@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.shortcuts import get_object_or_404, render
 from django import template
 from django.views.generic import ListView, DetailView
+from taggit.models import Tag
 
 from .models import Recipe, User
 
@@ -52,6 +54,33 @@ class IndexView(BaseRecipeListView):
     """Main page that displays list of Recipes."""
     page_title = 'Рецепты'
     template_name = 'recipes/recipe_list.html'
+
+
+def recipes_by_tag(request, tag_slug=None):
+    qs = Recipe.objects.all()
+    tag = None
+    page_title = 'Рецепты'
+
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        qs = qs.filter(tags__in=[tag])
+
+    paginator = Paginator(qs, 6)
+    page = request.GET.get('page')
+    try:
+        recipes = paginator.page(page)
+    except PageNotAnInteger:
+        recipes = paginator.page(1)
+    except EmptyPage:
+        recipes = paginator.page(paginator.num_pages)
+    return render(
+        request,
+        'recipes/recipe_list.html',
+        {'page': page,
+         'recipes': recipes,
+         'tag': tag,
+         'page_title': page_title}
+    )
 
 
 class FavoriteView(LoginRequiredMixin, BaseRecipeListView):
@@ -123,3 +152,12 @@ class SubscriptionView(BaseRecipeListView):
         qs = users.filter(following__user_id=self.request.user.id)
         return qs
 
+
+def cart(request):
+    page_title = 'Список покупок'
+
+    return render(
+        request,
+        'recipes/cart.html',
+        {'page_title': page_title}
+    )

@@ -5,6 +5,15 @@ import os
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'ui/'), ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = '/media/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SECRET_KEY = 'django-insecure-elo19s1eqy_k3@*_-4)=@y18#)do=rtnh@gm+)hii&%pwd(#^p'
 
@@ -20,6 +29,7 @@ INSTALLED_APPS = [
     'api',
     'recipes',
     'users',
+    'taggit',
     'rest_framework',
     'django_extensions',
     'django.contrib.admin',
@@ -48,6 +58,20 @@ if DEBUG:
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     ]
 
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'root': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+        },
+    }
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -61,6 +85,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'recipes.context_processors.shoplist'
             ],
         },
     },
@@ -109,13 +134,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'ui/'), ]
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-STATIC_URL = '/static/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-MEDIA_URL = '/media/'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

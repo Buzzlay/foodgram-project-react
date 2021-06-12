@@ -14,18 +14,18 @@
 {% block content %}
     <div class="main__header">
         <h1 class="main__title">{{ page_title }}</h1>
-        {% if request.resolver_match.url_name == 'favorites' or request.resolver_match.url_name == 'index' %}
+        {% if request.resolver_match.url_name == 'favorites' or request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'recipes_list_by_tag' %}
             <ul class="tags">
                 <li class="tags__item">
-                    <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="#"></a>
+                    <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="{% url 'recipes_list_by_tag' '_1' %}"></a>
                     <span class="tags__label">Завтрак</span>
                 </li>
                 <li class="tags__item">
-                    <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="#"></a>
+                    <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="{% url 'recipes_list_by_tag' '_3' %}"></a>
                     <span for="lunch" class="tags__label">Обед</span>
                 </li>
                 <li class="tags__item">
-                    <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active" href="#"></a>
+                    <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active" href="{% url 'recipes_list_by_tag' '_2' %}"></a>
                     <label for="dinner" class="tags__label">Ужин</label>
                 </li>
             </ul>
@@ -39,9 +39,15 @@
     {% endif %}
 
     <div class="card-list">
-        {% for recipe in page_obj %}
-            {% include 'includes/recipe_card.html' with recipe=recipe %}
-        {% endfor %}
+        {% if recipes %}
+            {% for recipe in recipes %}
+                {% include 'includes/recipe_card.html' with recipe=recipe %}
+            {% endfor %}
+        {% else %}
+            {% for recipe in page_obj %}
+                {% include 'includes/recipe_card.html' with recipe=recipe %}
+            {% endfor %}
+        {% endif %}
     </div>
     {% if page_obj.has_other_pages %}
         {% include 'includes/paginator.html' with items=page_obj paginator=paginator %}
