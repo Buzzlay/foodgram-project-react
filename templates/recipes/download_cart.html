@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% for recipe_ingredient in recipe_ingredients %}
+        <h3>{{ recipe_ingredient.ingredient__title }} - {{ recipe_ingredient.amount__sum }} {{ recipe_ingredient.ingredient__dimension }}</h3>
+    {% endfor %}
+
+</body>
+</html>

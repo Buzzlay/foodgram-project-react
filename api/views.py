@@ -57,7 +57,7 @@ class Purchases(APIView):
             cart[recipe.id] = {
                 'name': recipe.name,
                 'image': recipe.image.url,
-                'cook_time': recipe.time_for_preparing
+                'cook_time': recipe.time_for_preparing,
             }
             request.session.modified = True
         return Response({'success': True}, status=status.HTTP_200_OK,)
@@ -65,6 +65,8 @@ class Purchases(APIView):
     def delete(self, request, recipe_id):
         """Delete Recipe from Purchases."""
         recipe_id = str(recipe_id)
-        del request.session['cart'][recipe_id]
+        cart = request.session['cart']
+        if recipe_id in cart.keys():
+            del request.session['cart'][recipe_id]
         request.session.modified = True
         return Response({'success': True}, status=status.HTTP_200_OK)

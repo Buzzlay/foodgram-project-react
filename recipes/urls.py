@@ -41,5 +41,10 @@ urlpatterns = [
         'shoplist/',
         views.cart,
         name='shoplist'
-    )
+    ),
+    path(
+        'download_cart/',
+        views.download_cart,
+        name='download_cart'
+    ),
 ]

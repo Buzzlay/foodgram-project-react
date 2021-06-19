@@ -1,11 +1,19 @@
+import io
+import sys
+
+import pdfkit
+from django import template
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Sum
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404, render
-from django import template
+from django.template.loader import render_to_string
 from django.views.generic import ListView, DetailView
+
 from taggit.models import Tag
 
-from .models import Recipe, User
+from .models import Recipe, User, RecipeIngredient, Ingredient
 
 
 class IsFavoriteMixin:
@@ -161,3 +169,29 @@ def cart(request):
         'recipes/cart.html',
         {'page_title': page_title}
     )
+
+
+def download_cart(request):
+    """Download ingredients to buy.
+    wkhtmltopdf Required!!!"""
+    recipes_dict = request.session.get('cart')
+    recipe_ingredients = RecipeIngredient.objects.filter(
+        recipe__in=recipes_dict.keys()
+    )
+    recipe_ingredients = recipe_ingredients.values(
+        'ingredient__title', 'ingredient__dimension'
+    ).annotate(Sum('amount', distinct=True))
+    rendered = render_to_string(
+        'recipes/download_cart.html',
+        {'recipe_ingredients': recipe_ingredients}
+    )
+    if sys.platform == 'win32':
+        config = pdfkit.configuration(
+            wkhtmltopdf='D:\\DEV\\foodgram\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+        )
+        file = pdfkit.from_string(rendered, False, configuration=config)
+    else:
+        file = pdfkit.from_string(rendered, False)
+    buffer = io.BytesIO(file)
+    return FileResponse(buffer, as_attachment=True, filename='cart_file.pdf')
+
