@@ -1,3 +1,3 @@
 def shoplist(request):
-    cart = request.session['cart']
+    cart = request.session.setdefault('cart', {})
     return {'cart': cart}

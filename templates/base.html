@@ -10,13 +10,10 @@
 </head>
 <body class="body">
     {% include 'includes/navbar.html' %}
-
     <main class="main-container">
         {% block content %}{% endblock content %}
     </main>
-
     {% include 'includes/footer.html' %}
-
     {% block static_js %}{% endblock %}
 </body>
 </html>
