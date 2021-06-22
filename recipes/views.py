@@ -1,19 +1,17 @@
 import io
 import sys
-
 import pdfkit
 from django import template
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Sum
 from django.http import FileResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import render_to_string
 from django.views.generic import ListView, DetailView
 
-from taggit.models import Tag
-
-from .models import Recipe, User, RecipeIngredient, Ingredient
+from .forms import RecipeForm
+from .models import Recipe, User, RecipeIngredient
 
 
 class IsFavoriteMixin:
@@ -64,31 +62,31 @@ class IndexView(BaseRecipeListView):
     template_name = 'recipes/recipe_list.html'
 
 
-def recipes_by_tag(request, tag_slug=None):
-    qs = Recipe.objects.all()
-    tag = None
-    page_title = 'Рецепты'
-
-    if tag_slug:
-        tag = get_object_or_404(Tag, slug=tag_slug)
-        qs = qs.filter(tags__in=[tag])
-
-    paginator = Paginator(qs, 6)
-    page = request.GET.get('page')
-    try:
-        recipes = paginator.page(page)
-    except PageNotAnInteger:
-        recipes = paginator.page(1)
-    except EmptyPage:
-        recipes = paginator.page(paginator.num_pages)
-    return render(
-        request,
-        'recipes/recipe_list.html',
-        {'page': page,
-         'recipes': recipes,
-         'tag': tag,
-         'page_title': page_title}
-    )
+# def recipes_by_tag(request, tag_slug=None):
+#     tag = request.GET.get('query', '')
+#     qs = Recipe.objects.all()
+#     page_title = 'Рецепты'
+#
+#     if tag_slug:
+#         tag = get_object_or_404(Tag, slug=tag_slug)
+#         qs = qs.filter(tags__in=[tag])
+#
+#     paginator = Paginator(qs, 6)
+#     page = request.GET.get('page')
+#     try:
+#         recipes = paginator.page(page)
+#     except PageNotAnInteger:
+#         recipes = paginator.page(1)
+#     except EmptyPage:
+#         recipes = paginator.page(paginator.num_pages)
+#     return render(
+#         request,
+#         'recipes/recipe_list.html',
+#         {'page': page,
+#          'recipes': recipes,
+#          'tag': tag,
+#          'page_title': page_title}
+#     )
 
 
 class FavoriteView(LoginRequiredMixin, BaseRecipeListView):
@@ -195,3 +193,36 @@ def download_cart(request):
     buffer = io.BytesIO(file)
     return FileResponse(buffer, as_attachment=True, filename='cart_file.pdf')
 
+
+@login_required
+def recipe_edit_or_create(request, recipe_id=None):
+    recipe = None
+    if recipe_id is not None:
+        recipe = get_object_or_404(Recipe, pk=recipe_id, author=request.user)
+    ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+
+    form = RecipeForm(
+        data=request.POST or None,
+        files=request.FILES or None,
+        instance=recipe,
+    )
+
+    if request.method == 'POST' and form.is_valid():
+        form.instance.author = request.user
+        recipe = form.save()
+        return redirect('recipe', pk=recipe.pk)
+
+    return render(
+        request,
+        'recipes/recipe_edit_or_create.html',
+        {'form': form,
+         'is_edit': recipe is not None,
+         'ingredients': ingredients, },
+    )
+
+
+@login_required
+def recipe_delete(request, recipe_id):
+    recipe = get_object_or_404(Recipe, pk=recipe_id, author=request.user)
+    recipe.delete()
+    return redirect('index')

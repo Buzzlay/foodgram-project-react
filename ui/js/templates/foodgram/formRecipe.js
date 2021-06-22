@@ -1,7 +1,7 @@
 const counterId = document.querySelector('#counter');
 
 const ingredientsContainer = document.querySelector('.form__field-group-ingredientes-container');
-const nameIngredient = document.querySelector('#nameIngredient');
+const nameIngredient = document.querySelector('#id_ingredients');
 const formDropdownItems = document.querySelector('.form__dropdown-items');
 const cantidadVal = document.querySelector('#cantidadVal');
 const cantidad = document.querySelector('#cantidad')

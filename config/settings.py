@@ -29,8 +29,8 @@ INSTALLED_APPS = [
     'api',
     'recipes',
     'users',
-    'taggit',
     'rest_framework',
+    'sorl.thumbnail',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -85,13 +85,16 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'recipes.context_processors.shoplist'
+                'recipes.context_processors.shoplist',
+                'recipes.context_processors.tags'
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+APPEND_SLASH = False
 
 DATABASES = {
     'default': {

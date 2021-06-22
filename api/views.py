@@ -1,10 +1,13 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from recipes.models import Favorite, Follow, User, Recipe
+from recipes.models import Favorite, Follow, User, Recipe, Ingredient
+from .serializers import IngredientSerializer
 
 
 class AddToFavorites(APIView):
@@ -70,3 +73,11 @@ class Purchases(APIView):
             del request.session['cart'][recipe_id]
         request.session.modified = True
         return Response({'success': True}, status=status.HTTP_200_OK)
+
+
+class IngredientView(ListAPIView):
+    serializer_class = IngredientSerializer
+
+    def get_queryset(self):
+        title = self.request.GET.get('query', '')
+        return Ingredient.objects.filter(title__icontains=title)

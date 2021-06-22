@@ -24,7 +24,6 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
         'ingredient',
         'recipe',
         'amount',
-        'tags'
     )
     search_fields = (
         'ingredient',
@@ -83,3 +82,29 @@ class FollowAdmin(admin.ModelAdmin):
     list_filter = (
         'author',
     )
+
+
+@register(models.Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'slug',
+    )
+    search_fields = (
+        'name',
+    )
+    list_filter = (
+        'name',
+    )
+
+
+# @register(models.RecipeTag)
+# class RecipeTagAdmin(admin.ModelAdmin):
+#     fields = (
+#         'recipe',
+#         'tag',
+#     )
+#     search_fields = (
+#         'tag',
+#         'recipe',
+#     )

@@ -2,15 +2,14 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Exists, OuterRef
-from taggit.managers import TaggableManager
 from typing import Optional
 
 User = get_user_model()
 
 TAGS = (
-    ('B', 'Завтрак'),
-    ('L', 'Обед'),
-    ('D', 'Ужин')
+    ('Завтрак', 'Завтрак'),
+    ('Обед', 'Обед'),
+    ('Ужин', 'Ужин')
 )
 
 
@@ -31,6 +30,28 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'{self.title}, {self.dimension}'
+
+
+class Tag(models.Model):
+    name = models.CharField(
+        max_length=10,
+        choices=TAGS
+    )
+    color = models.CharField(
+        max_length=100,
+        verbose_name='Цвет тега',
+    )
+    slug = models.SlugField(
+        unique=True
+    )
+
+    class Meta:
+        ordering = ('id', )
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
+    def __str__(self):
+        return self.name
 
 
 class RecipeQuerySet(models.QuerySet):
@@ -55,7 +76,11 @@ class Recipe(models.Model):
         max_length=200,
         verbose_name='Название рецепта',
     )
-    tags = TaggableManager()
+    tags = models.ManyToManyField(
+        Tag,
+        verbose_name='Тэги',
+        related_name='tags'
+    )
     image = models.ImageField(
         upload_to='recipes/images/',
         verbose_name='Картинка',
@@ -92,7 +117,7 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    amount = models.FloatField(
+    amount = models.IntegerField(
         verbose_name='Количество',
         validators=[
             MinValueValidator(0),
@@ -170,3 +195,25 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'{self.user} - подписчик автора - {self.author}'
+
+
+# class RecipeTag(models.Model):
+#     tag = models.ForeignKey(
+#         Tag,
+#         on_delete=models.CASCADE,
+#         verbose_name='Тэг',
+#         related_name='tag_recipes',
+#     )
+#     recipe = models.ForeignKey(
+#         Recipe,
+#         on_delete=models.CASCADE,
+#         verbose_name='Рецепт',
+#         related_name='recipe_tags',
+#     )
+#
+#     def __str__(self):
+#         return f'{self.recipe} на {self.tag}'
+#
+#     class Meta:
+#         verbose_name = 'Тэг в рецепте'
+#         verbose_name_plural = 'Тэги в рецептах'

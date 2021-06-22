@@ -1,7 +1,5 @@
 from django.urls import path, include
 
-from rest_framework.urlpatterns import format_suffix_patterns
-
 from . import views
 
 
@@ -11,12 +9,17 @@ urlpatterns = [
         views.IndexView.as_view(),
         name='index'
     ),
-    path(
-        '<slug:tag_slug>',
-        views.recipes_by_tag,
-        name='recipes_list_by_tag'
-    ),
+    # path(
+    #     '<slug:tag_slug>',
+    #     views.recipes_by_tag,
+    #     name='recipes_list_by_tag'
+    # ),
     path('api/', include('api.urls')),
+    path(
+        'download_cart/',
+        views.download_cart,
+        name='download_cart'
+    ),
     path(
         'favorites/',
         views.FavoriteView.as_view(),
@@ -33,6 +36,21 @@ urlpatterns = [
         name='recipe'
     ),
     path(
+        'recipes/<int:recipe_id>/edit/',
+        views.recipe_edit_or_create,
+        name='edit'
+    ),
+    path(
+        'recipes/<int:recipe_id>/delete/',
+        views.recipe_delete,
+        name='delete'
+    ),
+    path(
+        'recipes/add/',
+        views.recipe_edit_or_create,
+        name='add'
+    ),
+    path(
         'subscriptions/',
         views.SubscriptionView.as_view(),
         name='subscriptions',
@@ -41,10 +59,5 @@ urlpatterns = [
         'shoplist/',
         views.cart,
         name='shoplist'
-    ),
-    path(
-        'download_cart/',
-        views.download_cart,
-        name='download_cart'
     ),
 ]
