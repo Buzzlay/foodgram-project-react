@@ -113,7 +113,9 @@
                 <div class="form__field-group">
                     <label for="{{ form.image.id_for_label }}"
                            class="form__file-button">Выбрать файл</label>
-                    <img src="{{ form.image.value.url }}" alt="{{ form.image.label }}">
+                    {% if is_edit %}
+                        <img src="{{ form.image.value.url }}" alt="{{ form.image.label }}">
+                    {% endif %}
                     <input type="file"
                            class="form__file"
                            name="{{ form.image.html_name }}"

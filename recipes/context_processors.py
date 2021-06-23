@@ -25,7 +25,8 @@ def tags(request):
         query_string = urlencode({'tags': tags_in_query}, doseq=True)
         tag_info = {
             'slug': tag.slug,
-            'name': tag.color,
+            'name': tag.name,
+            'color': tag.color,
             'active': active,
             'href': f'{request.path}?{query_string}',
         }

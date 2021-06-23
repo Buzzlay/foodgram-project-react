@@ -1,7 +1,6 @@
 import io
 import sys
 import pdfkit
-from django import template
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
@@ -12,6 +11,16 @@ from django.views.generic import ListView, DetailView
 
 from .forms import RecipeForm
 from .models import Recipe, User, RecipeIngredient
+
+
+def filter_by_tags(request, qs):
+    """Filtration by tags"""
+    tags = request.GET.getlist('tags', [])
+    if tags:
+        qs = qs.filter(tags__slug__in=tags).distinct()
+        return qs
+    else:
+        return qs
 
 
 class IsFavoriteMixin:
@@ -27,9 +36,6 @@ class IsFavoriteMixin:
         )
 
         return qs
-
-
-register = template.Library()
 
 
 class BaseRecipeListView(IsFavoriteMixin, ListView):
@@ -61,32 +67,9 @@ class IndexView(BaseRecipeListView):
     page_title = 'Рецепты'
     template_name = 'recipes/recipe_list.html'
 
-
-# def recipes_by_tag(request, tag_slug=None):
-#     tag = request.GET.get('query', '')
-#     qs = Recipe.objects.all()
-#     page_title = 'Рецепты'
-#
-#     if tag_slug:
-#         tag = get_object_or_404(Tag, slug=tag_slug)
-#         qs = qs.filter(tags__in=[tag])
-#
-#     paginator = Paginator(qs, 6)
-#     page = request.GET.get('page')
-#     try:
-#         recipes = paginator.page(page)
-#     except PageNotAnInteger:
-#         recipes = paginator.page(1)
-#     except EmptyPage:
-#         recipes = paginator.page(paginator.num_pages)
-#     return render(
-#         request,
-#         'recipes/recipe_list.html',
-#         {'page': page,
-#          'recipes': recipes,
-#          'tag': tag,
-#          'page_title': page_title}
-#     )
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return filter_by_tags(self.request, qs)
 
 
 class FavoriteView(LoginRequiredMixin, BaseRecipeListView):
@@ -99,8 +82,7 @@ class FavoriteView(LoginRequiredMixin, BaseRecipeListView):
         qs = super().get_queryset()
         user = self.request.user
         qs = qs.filter(favorites__user=user).with_is_favorite(user_id=user.id)
-
-        return qs
+        return filter_by_tags(self.request, qs)
 
 
 class ProfileView(BaseRecipeListView):
@@ -110,21 +92,20 @@ class ProfileView(BaseRecipeListView):
     def get(self, request, *args, **kwargs):
         """Store 'user' parameter for data filtration purposes."""
         self.user = get_object_or_404(User, username=kwargs.get('username'))
-
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         """Display favorite recipes only."""
         qs = super().get_queryset()
         qs = qs.filter(author=self.user)
-
-        return qs
+        return filter_by_tags(self.request, qs)
 
     def _get_page_title(self):
         """Get page title."""
         return self.user.get_full_name()
 
     def get_context_data(self, **kwargs):
+        """Adding Author to context."""
         kwargs.update({'author': self.user})
         context = super().get_context_data(**kwargs)
         return context
@@ -226,3 +207,12 @@ def recipe_delete(request, recipe_id):
     recipe = get_object_or_404(Recipe, pk=recipe_id, author=request.user)
     recipe.delete()
     return redirect('index')
+
+
+def page_not_found(request, exception):
+    return render(
+        request,
+        'misc/404.html',
+        {'path': request.path},
+        status=404
+    )

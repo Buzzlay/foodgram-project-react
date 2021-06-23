@@ -195,25 +195,3 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'{self.user} - подписчик автора - {self.author}'
-
-
-# class RecipeTag(models.Model):
-#     tag = models.ForeignKey(
-#         Tag,
-#         on_delete=models.CASCADE,
-#         verbose_name='Тэг',
-#         related_name='tag_recipes',
-#     )
-#     recipe = models.ForeignKey(
-#         Recipe,
-#         on_delete=models.CASCADE,
-#         verbose_name='Рецепт',
-#         related_name='recipe_tags',
-#     )
-#
-#     def __str__(self):
-#         return f'{self.recipe} на {self.tag}'
-#
-#     class Meta:
-#         verbose_name = 'Тэг в рецепте'
-#         verbose_name_plural = 'Тэги в рецептах'

@@ -11,6 +11,8 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
 ]
 
+handler404 = 'recipes.views.page_not_found'
+
 if settings.DEBUG:
     import debug_toolbar
 

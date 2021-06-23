@@ -33,10 +33,11 @@ class AddToFollows(APIView):
     def post(self, request):
         """Subscribe to the author."""
         author = get_object_or_404(User, id=request.data['id'])
-        Follow.objects.get_or_create(
-            user=self.request.user,
-            author=author,
-        )
+        if request.user != author:
+            Follow.objects.get_or_create(
+                user=self.request.user,
+                author=author,
+            )
         return Response({'success': True}, status=status.HTTP_200_OK)
 
     def delete(self, request, author_id):
