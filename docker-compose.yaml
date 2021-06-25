@@ -1,27 +1,40 @@
-version: '3'
+version: '3.8'
 
 services:
-
-  postgres:
+  db:
     image: postgres:13
+    ports:
+    - "5432:5432"
     volumes:
-    - postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
   web:
-    build:
-      dockerfile: Dockerfile
-      context: .
+    build: .
+    restart: always
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    ports:
+    - "8000:8000"
     volumes:
-    - ./:/home/www/app
+      - static_value:/code/static/
+      - media_value:/code/media/
     depends_on:
-      - postgres
+      - db
+    env_file:
+      - ./.env
   nginx:
     image: nginx:1.19.3
     ports:
-      - '80:80'
+      - "80:80"
     volumes:
-    - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    - ./static:/var/html/static/
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
+
     depends_on:
       - web
+
+volumes:
+  postgres_data:
+  static_value:
+  media_value:

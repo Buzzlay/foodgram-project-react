@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import register
+from django.contrib.auth.admin import UserAdmin
 
 from . import models
 
@@ -14,20 +15,8 @@ class IngredientAdmin(admin.ModelAdmin):
         'title',
     )
     list_filter = (
+        'title',
         'dimension',
-    )
-
-
-@register(models.RecipeIngredient)
-class RecipeIngredientAdmin(admin.ModelAdmin):
-    fields = (
-        'ingredient',
-        'recipe',
-        'amount',
-    )
-    search_fields = (
-        'ingredient',
-        'recipe',
     )
 
 
@@ -49,6 +38,7 @@ class RecipeAdmin(admin.ModelAdmin):
     )
     list_filter = (
         'author',
+        'name',
     )
     autocomplete_fields = (
         'ingredients',
@@ -98,13 +88,20 @@ class TagAdmin(admin.ModelAdmin):
     )
 
 
-# @register(models.RecipeTag)
-# class RecipeTagAdmin(admin.ModelAdmin):
-#     fields = (
-#         'recipe',
-#         'tag',
-#     )
-#     search_fields = (
-#         'tag',
-#         'recipe',
-#     )
+class CustomUserAdmin(UserAdmin):
+    list_display = (
+        'username',
+        'email',
+        'first_name',
+        'last_name',
+        'is_staff'
+
+    )
+    list_filter = (
+        'email',
+        'first_name'
+    )
+
+
+admin.site.unregister(models.User)
+admin.site.register(models.User, CustomUserAdmin)

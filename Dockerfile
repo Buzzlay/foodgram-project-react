@@ -1,17 +1,11 @@
-FROM python:3.9
+FROM python:3.9.5
 
-ENV C_FORCE_ROOT=True
+WORKDIR /code
 
-WORKDIR /home/www/app
+COPY requirements.txt .
 
-EXPOSE 8000
+RUN pip3 install -r ./requirements.txt
 
-CMD ['gunicorn', '--bind', '0:8000', 'config.wsgi']
 
-ENV DJANGO_SETTINGS_MODULE=foodgram.settings
 
-COPY requirements.txt /home/www/app
-
-RUN pip install --no-cache-dir --src=/src -r /home/www/app/requirements.txt
-
-COPY . /home/www/app
+COPY . .
