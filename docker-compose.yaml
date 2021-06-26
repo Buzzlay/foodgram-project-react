@@ -13,10 +13,7 @@ services:
     build: .
     image: buzzlay/foodgram:latest
     restart: always
-    command: bash -c "
-        gunicorn config.wsgi:application --bind 0.0.0.0:8000
-        && apt install wkhtmltopdf
-      "
+    command: bash -c "gunicorn config.wsgi:application --bind 0.0.0.0:8000 && apt update && apt install wkhtmltopdf -y"
     ports:
     - "8000:8000"
     volumes:
