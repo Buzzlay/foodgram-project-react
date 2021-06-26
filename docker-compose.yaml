@@ -11,6 +11,7 @@ services:
       - ./.env
   web:
     build: .
+    image: buzzlay/foodgram:latest
     restart: always
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     ports:
