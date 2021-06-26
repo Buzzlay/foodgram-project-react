@@ -94,8 +94,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-APPEND_SLASH = False
-
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE'),
