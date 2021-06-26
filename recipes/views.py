@@ -141,6 +141,7 @@ class SubscriptionView(BaseRecipeListView):
 
 
 def cart(request):
+    """Rendering shopping cart."""
     page_title = 'Список покупок'
 
     return render(
