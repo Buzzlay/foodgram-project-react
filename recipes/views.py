@@ -165,13 +165,7 @@ def download_cart(request):
         'recipes/download_cart.html',
         {'recipe_ingredients': recipe_ingredients}
     )
-    if sys.platform == 'win32':
-        config = pdfkit.configuration(
-            wkhtmltopdf='D:\\DEV\\foodgram\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
-        )
-        file = pdfkit.from_string(rendered, False, configuration=config)
-    else:
-        file = pdfkit.from_string(rendered, False)
+    file = pdfkit.from_string(rendered, False)
     buffer = io.BytesIO(file)
     return FileResponse(buffer, as_attachment=True, filename='cart_file.pdf')
 
