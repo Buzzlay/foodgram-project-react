@@ -134,7 +134,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
-
+# try
 LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
