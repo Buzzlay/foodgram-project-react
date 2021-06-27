@@ -42,4 +42,3 @@ def technology(request):
          'title': 'Об авторе'},
         status=200
     )
-
