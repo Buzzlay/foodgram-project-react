@@ -10,16 +10,7 @@ from django.views.generic import ListView, DetailView
 
 from .forms import RecipeForm
 from .models import Recipe, User, RecipeIngredient
-
-
-def filter_by_tags(request, qs):
-    """Filtration by tags"""
-    tags = request.GET.getlist('tags', [])
-    if tags:
-        qs = qs.filter(tags__slug__in=tags).distinct()
-        return qs
-    else:
-        return qs
+from .utils import filter_by_tags
 
 
 class IsFavoriteMixin:
@@ -55,8 +46,9 @@ class BaseRecipeListView(IsFavoriteMixin, ListView):
 
     def _get_page_title(self):
         """Get page title."""
-        assert self.page_title, f'Attribute "page_title" not set for' \
-                                f' {self.__class__.__name__}' # noqa
+        assert self.page_title, (
+            f'Attribute "page_title" not set for {self.__class__.__name__}'
+        )
 
         return self.page_title
 
@@ -139,15 +131,17 @@ class SubscriptionView(BaseRecipeListView):
         return qs
 
 
-def cart(request):
+class CartView(BaseRecipeListView):
     """Rendering shopping cart."""
     page_title = 'Список покупок'
+    template_name = 'recipes/cart.html'
 
-    return render(
-        request,
-        'recipes/cart.html',
-        {'page_title': page_title}
-    )
+    def get_queryset(self):
+        """Display cart recipes"""
+        recipes_dict = self.request.session.get('cart')
+        qs = super().get_queryset()
+        qs = qs.filter(id__in=recipes_dict.keys())
+        return qs
 
 
 def download_cart(request):
@@ -182,7 +176,7 @@ def recipe_edit_or_create(request, recipe_id=None):
         instance=recipe,
     )
 
-    if request.method == 'POST' and form.is_valid():
+    if form.is_valid():
         form.instance.author = request.user
         recipe = form.save()
         return redirect('recipe', pk=recipe.pk)
@@ -201,12 +195,3 @@ def recipe_delete(request, recipe_id):
     recipe = get_object_or_404(Recipe, pk=recipe_id, author=request.user)
     recipe.delete()
     return redirect('index')
-
-
-def page_not_found(request, exception):
-    return render(
-        request,
-        'misc/404.html',
-        {'path': request.path},
-        status=404
-    )

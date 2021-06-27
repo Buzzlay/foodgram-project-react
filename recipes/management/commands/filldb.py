@@ -12,12 +12,6 @@ MAX_FAVORITES = 20
 
 
 class Command(BaseCommand):
-    """Custom 'filldb' command
-
-    Django commands docs:
-    https://docs.djangoproject.com/en/3.1/howto/custom-management-commands/
-
-    """
     help = 'Fill DB with simple data'
 
     def handle(self, *args, **options):

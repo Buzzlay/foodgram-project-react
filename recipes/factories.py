@@ -14,7 +14,6 @@ class BaseRecipeFactory(factory.django.DjangoModelFactory):
     name = factory.Faker('word')
     image = factory.django.ImageField(width=1000)
     description = factory.Faker('text')
-    # no ingredients
     time_for_preparing = fuzzy.FuzzyInteger(10, 120)
 
     class Meta:

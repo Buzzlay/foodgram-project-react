@@ -6,12 +6,6 @@ from typing import Optional
 
 User = get_user_model()
 
-TAGS = (
-    ('Завтрак', 'Завтрак'),
-    ('Обед', 'Обед'),
-    ('Ужин', 'Ужин')
-)
-
 
 class Ingredient(models.Model):
     title = models.CharField(
@@ -33,16 +27,26 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
+    BREAKFAST = 'Завтрак'
+    LUNCH = 'Обед'
+    DINNER = 'Ужин'
+    TAGS = [
+        (BREAKFAST, 'Завтрак'),
+        (LUNCH, 'Обед'),
+        (DINNER, 'Ужин'),
+    ]
     name = models.CharField(
         max_length=10,
-        choices=TAGS
+        choices=TAGS,
+        verbose_name='Имя тэга'
     )
     color = models.CharField(
         max_length=100,
         verbose_name='Цвет тега',
     )
     slug = models.SlugField(
-        unique=True
+        unique=True,
+        verbose_name='Слаг тэга'
     )
 
     class Meta:
@@ -79,7 +83,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Тэги',
-        related_name='tags'
+        related_name='recipes'
     )
     image = models.ImageField(
         upload_to='recipes/images/',
@@ -136,12 +140,12 @@ class RecipeIngredient(models.Model):
         related_name='recipe_ingredients',
     )
 
-    def __str__(self):
-        return f'{self.ingredient} в {self.recipe}'
-
     class Meta:
         verbose_name = 'Ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецептах'
+
+    def __str__(self):
+        return f'{self.ingredient} в {self.recipe}'
 
 
 class Favorite(models.Model):
@@ -158,9 +162,6 @@ class Favorite(models.Model):
         verbose_name='Рецепт',
     )
 
-    def __str__(self):
-        return f'Избранный {self.recipe} у {self.user}'
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -171,17 +172,22 @@ class Favorite(models.Model):
         verbose_name = 'Объект избранного'
         verbose_name_plural = 'Объекты избранного'
 
+    def __str__(self):
+        return f'Избранный {self.recipe} у {self.user}'
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
         User,
         related_name='follower',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='Подписчик'
     )
     author = models.ForeignKey(
         User,
         related_name='following',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='Автор'
     )
 
     class Meta:

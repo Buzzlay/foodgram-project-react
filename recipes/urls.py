@@ -9,7 +9,10 @@ urlpatterns = [
         views.IndexView.as_view(),
         name='index'
     ),
-    path('api/', include('api.urls')),
+    path(
+        'api/v1/',
+        include('api.urls')
+    ),
     path(
         'download_cart/',
         views.download_cart,
@@ -52,7 +55,7 @@ urlpatterns = [
     ),
     path(
         'shoplist/',
-        views.cart,
+        views.CartView.as_view(),
         name='shoplist'
     ),
 ]

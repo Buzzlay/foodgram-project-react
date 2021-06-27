@@ -14,12 +14,12 @@
 {% block content %}
     <div class="card-list card-list_column">
         <ul class="shopping-list">
-            {% for id, attributes in cart.items %}
-                <li class="shopping-list__item" data-id="{{ id }}">
+            {% for recipe in recipe_list %}
+                <li class="shopping-list__item" data-id="{{ recipe.id }}">
                     <div class="recipe recipe_reverse">
-                        <img src="{{ attributes.image }}" alt="{{ attributes.name }}" class="recipe__image recipe__image_big">
-                        <h3 class="recipe__title">{{ attributes.name }}</h3>
-                        <p class="recipe__text"><span class="icon-time"></span> {{ attributes.cook_time }} мин.</p>
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="recipe__image recipe__image_big">
+                        <h3 class="recipe__title">{{ recipe.name }}</h3>
+                        <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time_for_preparing }} мин.</p>
                     </div>
                     <a href="#" class="shopping-list__button link">Удалить</a>
                 </li>

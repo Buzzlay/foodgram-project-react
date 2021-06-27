@@ -1,5 +1,4 @@
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Recipe, Tag, Ingredient, RecipeIngredient
 
@@ -60,7 +59,7 @@ class RecipeForm(forms.ModelForm):
         for name, amount in self._ingredients.items():
             try:
                 ingredient = Ingredient.objects.get(title=name)
-            except ObjectDoesNotExist:
+            except Ingredient.DoesNotExist:
                 continue
 
             RecipeIngredient.objects.create(
