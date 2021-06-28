@@ -10,7 +10,7 @@ urlpatterns = [
         name='index'
     ),
     path(
-        'api/v1/',
+        'api/',
         include('api.urls')
     ),
     path(

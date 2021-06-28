@@ -25,10 +25,9 @@ class AddToFavorites(APIView):
                 'recipe': recipe_id,
                 'user': user[0].id
             })
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, id, format=None):
         """Remove a Recipe from User's Favorite"""
@@ -48,7 +47,8 @@ class AddToFollows(APIView):
                 'author': author_id,
                 'user': user.id
             })
-        if serializer.is_valid() and user.id != author_id:
+        if user.id != author_id:
+            serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -75,7 +75,8 @@ class Purchases(APIView):
                 'id': recipe.id,
             }
         )
-        if recipe.id not in cart and serializer.is_valid():
+        if recipe.id not in cart:
+            serializer.is_valid(raise_exception=True)
             cart[recipe.id] = recipe.name
             request.session.modified = True
             return Response({'success': True}, status=status.HTTP_200_OK)
