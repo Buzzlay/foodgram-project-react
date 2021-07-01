@@ -48,4 +48,3 @@ def is_following(request):
     for follow in Follow.objects.filter(user=follower):
         follows.append(follow.author.username)
     return {'follows': follows}
-

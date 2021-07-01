@@ -1,7 +1,7 @@
 import io
 import pdfkit
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404, render, redirect
