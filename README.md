@@ -16,19 +16,27 @@ and collect static
 `sudo docker-compose exec web python manage.py collectstatic --noinput`
 
 for downloading cart you need to install wkhtmltopdf:
+
 1. enter to web container
 
 `sudo docker exec -it 'container_id' bash`
+
 2. update apt
 
 `apt update`
+
 3. install wkhtmltopdf
 
 `apt install wkhtmltopdf`
+
 4. and exit
 
 `exit`
 
-Now if you want to test project you may fill db
+Now you need to load ingredients.json
+
+`sudo docker-compose exec web python manage.py loaddata ingredients.json`
+
+Finally if you want to test project you may fill db
 
 `sudo docker-compose exec web python manage.py filldb`
