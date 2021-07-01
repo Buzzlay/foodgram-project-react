@@ -9,6 +9,7 @@ User = get_user_model()
 
 class UserFactory(factory.django.DjangoModelFactory):
     """Factory for generates test User model"""
+    first_name = factory.Faker('word')
     password = 'Password2?'
 
     class Meta:

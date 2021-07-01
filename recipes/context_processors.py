@@ -1,6 +1,6 @@
 from urllib.parse import urlencode
 
-from .models import Tag
+from .models import Tag, Follow
 
 
 def shoplist(request):
@@ -38,3 +38,14 @@ def tags(request):
             {'tags': currently_selected_tags}, doseq=True,
         ),
     }
+
+
+def is_following(request):
+    if not request.user.is_authenticated:
+        return {'follows': ''}
+    follower = request.user
+    follows = []
+    for follow in Follow.objects.filter(user=follower):
+        follows.append(follow.author.username)
+    return {'follows': follows}
+

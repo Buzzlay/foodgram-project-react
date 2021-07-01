@@ -15,6 +15,7 @@ from .serializers import (
 
 
 class AddToFavorites(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
         """Add a Recipe to Favorites of a User."""
@@ -47,8 +48,8 @@ class AddToFollows(APIView):
                 'author': author_id,
                 'user': user.id
             })
-        if user.id != author_id:
-            serializer.is_valid(raise_exception=True)
+        serializer.is_valid(raise_exception=True)
+        if serializer.validated_data['user'].id != author_id:
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

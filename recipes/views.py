@@ -1,7 +1,7 @@
 import io
 import pdfkit
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.db.models import Sum
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -65,6 +65,7 @@ class IndexView(BaseRecipeListView):
 
 class FavoriteView(LoginRequiredMixin, BaseRecipeListView):
     """List of current user's favorite Recipes"""
+    login_url = 'login'
     page_title = 'Избранное'
     template_name = 'recipes/recipe_list.html'
 
@@ -119,10 +120,12 @@ class RecipeDetailView(IsFavoriteMixin, DetailView):
         return qs
 
 
-class SubscriptionView(BaseRecipeListView):
+class SubscriptionView(LoginRequiredMixin, BaseRecipeListView):
     """Page that displays list of Recipes from subscriptions."""
+    login_url = 'login'
     page_title = 'Мои подписки'
     template_name = 'recipes/my_follows.html'
+    paginate_by = 3
 
     def get_queryset(self):
         """Display following recipes only."""
@@ -163,7 +166,7 @@ def download_cart(request):
     return FileResponse(buffer, as_attachment=True, filename='cart_file.pdf')
 
 
-@login_required
+@login_required(login_url='login')
 def recipe_edit_or_create(request, recipe_id=None):
     recipe = None
     if recipe_id is not None:

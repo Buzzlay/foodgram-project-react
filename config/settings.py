@@ -85,7 +85,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'recipes.context_processors.shoplist',
-                'recipes.context_processors.tags'
+                'recipes.context_processors.tags',
+                'recipes.context_processors.is_following'
             ],
         },
     },

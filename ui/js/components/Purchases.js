@@ -22,7 +22,7 @@ class Purchases {
             })
     };
     removePurchases (target,cardId,callBack) {
-        target.setAttribute('disabled', true)
+        target.setAttribute('disabled', true);
         this.api.removePurchases(cardId)
             .then( e => {
                 target.innerHTML = this.config.default.text;

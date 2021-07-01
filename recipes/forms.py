@@ -36,7 +36,16 @@ class RecipeForm(forms.ModelForm):
             idx = key.replace('nameIngredient_', '')
             ingredient_name = value
             ingredient_value = self.data[f'valueIngredient_{idx}']
-            ingredients[ingredient_name] = ingredient_value
+            if int(ingredient_value) > 0:
+                ingredients[ingredient_name] = ingredient_value
+            else:
+                raise forms.ValidationError(
+                    {
+                        'ingredients': [
+                            'Нельзя указывать отрицательное количество',
+                        ]
+                    }
+                )
 
         if not ingredients:
             raise forms.ValidationError(

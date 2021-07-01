@@ -17,36 +17,32 @@
     </div>
     <div class="card-list">
         {% for author in page_obj %}
-            <div class="card-user" data-author={{ author.pk }}>
+            <div class="card-user" data-author="{{ author.pk }}">
                 <div class="card-user__header">
-                    <a href="{% url 'profile' author.username %}" style="color: black">
-                        <h2 class="card-user__title">
-                            {% firstof author.get_full_name author.username %}
-                        </h2>
-                    </a>
+                    <h2 class="card-user__title">
+                        {% firstof author.get_full_name author.username %}
+                    </h2>
                 </div>
                 <div class="card-user__body">
                     <ul class="card-user__items">
                         {% for recipe in author.recipes.all %}
                             <li class="card-user__item">
-                            <div class="recipe">
-                                <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="recipe__image">
-                                <h3 class="recipe__title">{{ recipe.name }}</h3>
-                                <p class="recipe__text">
-                                    <span class="icon-time"></span>{{ recipe.time_for_preparing }} мин.
-                                </p>
-                            </div>
-                        </li>
+                                <div class="recipe">
+                                    <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="recipe__image">
+                                    <h3 class="recipe__title">{{ recipe.name }}</h3>
+                                    <p class="recipe__text">
+                                        <span class="icon-time"></span>{{ recipe.time_for_preparing }} мин.
+                                    </p>
+                                </div>
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="card-user__footer" data-author={{ author.pk }}>
-                    <button
-                            class="button button_style_light-blue button_size_auto"
-                            name="subscribe">
-                        Отписаться
-                    </button>
-                </div>
+                {% if request.user.is_authenticated %}
+                    <div class="card-user__footer">
+                        <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+                    </div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
