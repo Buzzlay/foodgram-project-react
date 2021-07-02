@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Recipe, Tag, Ingredient, RecipeIngredient
+from .models import Recipe, Tag, Ingredient, RecipeIngredient, Follow
 
 
 class RecipeForm(forms.ModelForm):
@@ -77,3 +77,9 @@ class RecipeForm(forms.ModelForm):
                 amount=amount
             )
         return recipe
+
+
+class FollowForm(forms.ModelForm):
+    class Meta:
+        model = Follow
+        fields = '__all__'

@@ -56,11 +56,12 @@ class AddToFollows(APIView):
 
     def delete(self, request, author_id):
         """Unsubscribe from author."""
-        get_object_or_404(
+        follow = get_object_or_404(
             Follow,
             user=self.request.user,
             author=author_id,
-        ).delete()
+        )
+        follow.delete()
         return Response({'success': True}, status=status.HTTP_200_OK)
 
 
