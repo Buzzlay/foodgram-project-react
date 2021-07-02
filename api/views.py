@@ -95,6 +95,7 @@ class Purchases(APIView):
 
 
 class IngredientView(ListAPIView):
+    """Get ingredients for choice in RecipeForm"""
     serializer_class = IngredientSerializer
 
     def get_queryset(self):
